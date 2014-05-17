@@ -6,14 +6,11 @@ use Phalcon\Mvc\Micro as App;
 
 define ('APP_PATH', realpath('../app'));
 
+require APP_PATH . '/config/config.php';
 require APP_PATH . '/config/loader.php';
 require APP_PATH . '/config/services.php';
 
 try {
-
-	//Variable sd configuracion
-	$url = "http://localhost/dark_moon_Phalcon/server_test/apitemp.php";
-	$separador = ";";
 
 	$app = new App();
 
