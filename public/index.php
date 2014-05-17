@@ -23,18 +23,20 @@ try {
 	$app->get('/coordinates', function() use ($url) {
 
 		$content = file_get_contents($url);
-		$client = new Predis\Client();
+
 		$arrayTemp = array();
 		foreach (explode(";", $content) as $n => $coords) {
 			if (!$n) {
-				continue;				
+				continue;
 			}
 
 			$c = explode(",", $coords);
 			$index = $c[0];
-			if ($index=="P" || $index=="M" || $index=="O") {
+			if ($index=="C" || $index=="M" || $index=="O") {
+				$c[5] = $c[0];
 				unset($c[0]);
-				if (($c[1]>-1000 && $c[1]<=1000) || ($c[2]>-1000 && $c[2]<=1000) || ($c[3]>-1000 && $c[3]<=1000)) {
+				$c[4] = 0;
+				if (($c[1] >= -1000 && $c[1]<=1000) || ($c[2]>=-1000 && $c[2]<=1000) || ($c[3]>=-1000 && $c[3]<=1000)) {
 					$c[4] = 1;
 				}
 				$arrayTemp[$index][] = array_values($c);
@@ -42,9 +44,11 @@ try {
 			unset($index, $c, $n, $coords);
 		}
 
+		$client = new Predis\Client();
 		foreach ($arrayTemp as $index => $a) {
 			$client->lpush($index, json_encode($a));
 		}
+
 		$client->lpush('db', $content);
 	});
 
@@ -54,7 +58,11 @@ try {
 	 */
 	$app->get('/lastCoordinate/{tipo}', function($tipo) {
 		$client = new Predis\Client();
-		echo $val = $client->lpop($tipo);
+		echo $client->lpop($tipo);
+		//$val = $client->lrange($tipo, 0, -1);
+		//if (isset($val[0])) {
+		//	echo $val[0];
+		//}
 	});
 
 	/**
