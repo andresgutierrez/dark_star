@@ -35,7 +35,7 @@ try {
 			if ($index=="P" || $index=="M" || $index=="O") {
 				unset($c[0]);
 				if (($c[1]>-1000 && $c[1]<=1000) || ($c[2]>-1000 && $c[2]<=1000) || ($c[3]>-1000 && $c[3]<=1000)) {
-					$c[4] = "Colision";
+					$c[4] = 1;
 				}
 				$arrayTemp[$index][] = array_values($c);
 			}
@@ -49,18 +49,17 @@ try {
 	});
 
 	/**
-	 * Return a coordinates by a file initial
+	 * Return a coordinates in redis
 	 * $param string $type Example: file, rest
 	 */
 	$app->get('/lastCoordinate/{tipo}', function($tipo) {
 		$client = new Predis\Client();
-		$val = $client->lpop($tipo);
-		var_dump($val);
+		echo $val = $client->lpop($tipo);
 	});
 
 	/**
 	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest
+	 * $param string $type Example: P, M, O
 	 */
 	$app->get('/randCoordinate/{tipo}', function($tipo) {
 
