@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL);
 
-use Phalcon\Mvc\Micro as App; 
+use Phalcon\Mvc\Micro as App;
 
 define ('APP_PATH', realpath('../app'));
 
@@ -10,24 +10,20 @@ require APP_PATH . '/config/loader.php';
 require APP_PATH . '/config/services.php';
 
 try {
-//
 
 	//Variable sd configuracion
 	$url = "http://localhost/dark_moon_Phalcon/server_test/apitemp.php";
 	$separador = ";";
- 
+
 	$app = new App();
-	
+
 	/**
 	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest   
+	 * $param string $type Example: file, rest
 	 */
 	$app->get('/coordinates', function() use ($url) {
-		$content = file_get_contents($url);
 
-		// Prepend a base path if Predis is not available in your "include_path".
-		require '../app/library/Predis/autoload.php';
-		Predis\Autoloader::register();
+		$content = file_get_contents($url);
 
 		$client = new Predis\Client();
 
@@ -40,7 +36,7 @@ try {
 
 	/**
 	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest   
+	 * $param string $type Example: file, rest
 	 */
 	$app->get('/lastCoordinateF', function() use ($url) {
 		// Prepend a base path if Predis is not available in your "include_path".
@@ -55,12 +51,9 @@ try {
 
 	/**
 	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest   
+	 * $param string $type Example: file, rest
 	 */
 	$app->get('/lastCoordinateD', function() use ($url) {
-		// Prepend a base path if Predis is not available in your "include_path".
-		require '../app/library/Predis/autoload.php';
-		Predis\Autoloader::register();
 
 		$client = new Predis\Client();
 
@@ -70,18 +63,15 @@ try {
 
 	/**
 	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest   
+	 * $param string $type Example: file, rest
 	 */
 	$app->get('/randCoordinate', function() use ($url) {
-		// Prepend a base path if Predis is not available in your "include_path".
-		require '../app/library/Predis/autoload.php';
-		Predis\Autoloader::register();
 
 		$client = new Predis\Client();
 
 		$val = $client->lrange('lastFront', rand(1,1000)*-1, -1);
 		echo $val[0];
-	});	
+	});
 
 	$app->handle();
 
