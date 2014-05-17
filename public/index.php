@@ -10,13 +10,11 @@ require APP_PATH . '/config/config.php';
 require APP_PATH . '/config/loader.php';
 require APP_PATH . '/config/services.php';
 
-// Prepend a base path if Predis is not available in your "include_path".
-require_once APP_PATH . '/library/Predis/autoload.php';
-Predis\Autoloader::register();
-
 try {
 
 	$app = new App();
+
+	//echo Phalcon\Version::get();
 
 	/**
 	 * Return a coordinates by a file initial
@@ -33,11 +31,12 @@ try {
 			}
 
 			$c = explode(",", $coords);
-			var_dump($c);
 			$index = $c[0];
-			if ($index=="P" || $index=="S" || $index=="C") {
-				echo $index;
-				unset($c[0]);		
+			if ($index=="P" || $index=="M" || $index=="O") {
+				unset($c[0]);
+				if (($c[1]>-1000 && $c[1]<=1000) || ($c[2]>-1000 && $c[2]<=1000) || ($c[3]>-1000 && $c[3]<=1000)) {
+					$c[4] = "Colision";
+				}
 				$arrayTemp[$index][] = array_values($c);
 			}
 			unset($index, $c, $n, $coords);
@@ -53,20 +52,19 @@ try {
 	 * Return a coordinates by a file initial
 	 * $param string $type Example: file, rest
 	 */
-	$app->get('/lastCoordinate/{tipo}', function($tipo) use ($url) {
+	$app->get('/lastCoordinate/{tipo}', function($tipo) {
 		$client = new Predis\Client();
-		$val = $client->lrange($tipo, -1, -1);
-		echo $val[0];
+		$val = $client->lpop($tipo);
+		var_dump($val);
 	});
 
 	/**
 	 * Return a coordinates by a file initial
 	 * $param string $type Example: file, rest
 	 */
-	$app->get('/randCoordinate/{tipo}', function($tipo) use ($url) {
+	$app->get('/randCoordinate/{tipo}', function($tipo) {
 
 		$client = new Predis\Client();
-
 		$val = $client->lrange($tipo, rand(1,1000)*-1, -1);
 		echo $val[0];
 	});
