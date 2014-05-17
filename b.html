@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>three.js css3d - periodic table</title>
+		<style>
+		body {
+			background: url(js/bckmain.png);
+		}
+		</style>
+	</head>
+
+	<body>
+		<script src="js/three.min.js"></script>
+		<script src="js/tween.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script defer="defer">
+	  // revolutions per second
+	  var angularSpeed = 0.2;
+	  var lastTime = 0;
+
+	  // this function is executed on each animation frame
+	  function animate(cube){
+
+		// update
+		var time = (new Date()).getTime();
+		var timeDiff = time - lastTime;
+		var angleChange = angularSpeed * timeDiff * 1 * Math.PI / 1000;
+		cube.rotation.y += angleChange;
+		lastTime = time;
+
+		//requestAnimationFrame( animate );
+		//TWEEN.update();
+
+		// render
+		renderer.render(scene, camera);
+
+		// request new frame
+		requestAnimationFrame(function(){
+			animate(cube);
+		});
+	  }
+
+	  // renderer
+	  var renderer = new THREE.WebGLRenderer( { alpha: true } );
+	  renderer.setClearColor( 0x000000, 0 );
+	  renderer.setSize(window.innerWidth, window.innerHeight);
+	  document.body.appendChild(renderer.domElement);
+
+	   // scene
+	  var scene = new THREE.Scene();
+
+	  // camera
+	  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+	  camera.position.z = 500;
+	  camera.lookAt(scene.position);
+
+		var moonTexture = THREE.ImageUtils.loadTexture( 'js/ds3+bw.jpg' );
+		var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
+
+	  for (var i = 0; i < 1; i++) {
+
+		// cube
+		var cube = new THREE.Mesh(new THREE.SphereGeometry(30, 30, 30), moonMaterial);
+		cube.overdraw = true;
+		//cube.rotation.x = Math.PI * 0.1;
+
+		cube.position.x = 0;
+		cube.position.y = 0;
+		cube.position.z = 0;
+
+		scene.add(cube);
+
+		animate(cube);
+	  }
+
+	 var planetTexture = THREE.ImageUtils.loadTexture( 'js/Desert_planet_Texture_2_by_CaBoose77.jpg' );
+	var planetMaterial = new THREE.MeshBasicMaterial( { map: planetTexture } );
+
+	 var satTexture = THREE.ImageUtils.loadTexture( 'js/Planet_Texture_by_ShockBeam.png' );
+	var satMaterial = new THREE.MeshBasicMaterial( { map: satTexture } );
+
+	var comTexture = THREE.ImageUtils.loadTexture( 'js/mtKffGS.jpg' );
+	var comMaterial = new THREE.MeshBasicMaterial( { map: comTexture } );
+
+	var planets = [], satellites = [], comets = [];
+
+	for (var i = 0; i < 20; i++) {
+
+// cube
+		var cube = new THREE.Mesh(new THREE.SphereGeometry(15, 30, 30), planetMaterial);
+		cube.overdraw = true;
+		//cube.rotation.x = Math.PI * 0.1;
+
+		cube.position.x = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.y = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.z = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+
+		scene.add(cube);
+
+		//animate(cube);
+		planets.push(cube);
+	}
+
+	for (var i = 0; i < 20; i++) {
+
+// cube
+		var cube = new THREE.Mesh(new THREE.SphereGeometry(10, 30, 30), satMaterial);
+		cube.overdraw = true;
+		//cube.rotation.x = Math.PI * 0.1;
+
+		cube.position.x = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.y = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.z = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+
+		scene.add(cube);
+
+		//animate(cube);
+		satellites.push(cube);
+	}
+
+	for (var i = 0; i < 20; i++) {
+
+// cube
+		var cube = new THREE.Mesh(new THREE.SphereGeometry(5, 30, 30), comMaterial);
+		cube.overdraw = true;
+		//cube.rotation.x = Math.PI * 0.1;
+
+		cube.position.x = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.y = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+		cube.position.z = Math.random() * ((Math.random() > 0.5) ? 500 : -500);
+
+		scene.add(cube);
+
+		//animate(cube);
+		comets.push(cube);
+	}
+
+	  // start animation
+
+	function onWindowResize() {
+
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		render();
+	}
+
+	window.addEventListener('resize', onWindowResize, false);
+
+	/*$.ajax({
+		url: "test.html",
+  		context: document.body
+	}).done(function() {
+  		$( this ).addClass( "done" );
+	});*/
+
+	//[["P", 10, 100, 500], ["C", 10, 100, 500]]
+
+	var d = [];
+	for (var i = 0; i < 20; i++) {
+			d.push([
+				"P",
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000)
+			]);
+			d.push([
+				"O",
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000)
+			]);
+			d.push([
+				"M",
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000),
+				Math.random() * ((Math.random() > 0.5) ? 1000 : -1000)
+			]);
+	}
+
+	function transform(){
+
+		TWEEN.removeAll();
+
+		var j = 0, k = 0, p = 0;
+		for (var i = 0; i < d.length; i++) {
+			if (d[i][0] == "P") {
+
+				try {
+					new TWEEN.Tween(planets[j].position)
+					.to( {
+						x: planets[j].position.x > 0 ? planets[j].position.x - 10 : planets[j].position.x + 10,
+						y: planets[j].position.y > 0 ? planets[j].position.y - 10 : planets[j].position.y + 10,
+						z: planets[j].position.z > 0 ? planets[j].position.z - 10 : planets[j].position.z + 10
+					}, 1000)
+					//.easing(TWEEN.Easing.Elastic.InOut )
+					.start();
+					j++;
+				}
+				catch (e) {
+					alert(e)
+				}
+			}
+			if (d[i][0] == "M") {
+
+				try {
+					new TWEEN.Tween(comets[k].position)
+					.to({
+						x: comets[k].position.x + Math.random() * ((Math.random() > 0.5) ? 100 : -100),
+						y: comets[k].position.y + 10,
+						z: comets[k].position.z + 10
+					}, 1000)
+					//.easing(TWEEN.Easing.Elastic.InOut )
+					.start();
+					k++;
+				}
+				catch (e) {
+					alert(e)
+				}
+			}
+			if (d[i][0] == "O") {
+
+				try {
+					new TWEEN.Tween(satellites[p].position)
+					.to({
+						x: satellites[p].position.x + Math.random() * ((Math.random() > 0.5) ? 100 : -100),
+						y: satellites[p].position.y + 10,
+						z: satellites[p].position.z + 10
+					}, 1000)
+					//.easing(TWEEN.Easing.Elastic.InOut )
+					.start();
+					p++;
+				}
+				catch (e) {
+					alert(e)
+				}
+			}
+		}
+
+		new TWEEN.Tween( this )
+				.to( {}, 1000 )
+				.onUpdate( render )
+				.start();
+	}
+
+	function render() {
+		renderer.render( scene, camera );
+	}
+
+	function run() {
+        requestAnimationFrame(function() { run(); });
+
+		// Render the scene
+		renderer.render( scene, camera );
+
+		// Update the animations
+		TWEEN.update();
+
+		// Update the camera controller
+		//orbitControls.update();
+	}
+
+	run();
+	window.setInterval(transform, 1000)
+
+	</script>
+	</body>
+</html>
