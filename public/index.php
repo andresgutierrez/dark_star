@@ -11,7 +11,7 @@ require APP_PATH . '/config/loader.php';
 require APP_PATH . '/config/services.php';
 
 // Prepend a base path if Predis is not available in your "include_path".
-require_once '../library/Predis/autoload.php';
+require_once APP_PATH . '/library/Predis/autoload.php';
 Predis\Autoloader::register();
 
 try {
@@ -46,10 +46,7 @@ try {
 		foreach ($arrayTemp as $index => $a) {
 			$client->lpush($index, json_encode($a));
 		}
-
-
-		$client->lpush('db', $content);	
-		
+		$client->lpush('db', $content);
 	});
 
 	/**
@@ -58,7 +55,6 @@ try {
 	 */
 	$app->get('/lastCoordinate/{tipo}', function($tipo) use ($url) {
 		$client = new Predis\Client();
-
 		$val = $client->lrange($tipo, -1, -1);
 		echo $val[0];
 	});
@@ -67,23 +63,11 @@ try {
 	 * Return a coordinates by a file initial
 	 * $param string $type Example: file, rest
 	 */
-	$app->get('/lastCoordinateD', function() use ($url) {
+	$app->get('/randCoordinate/{tipo}', function($tipo) use ($url) {
 
 		$client = new Predis\Client();
 
-		$val = $client->lrange('lastDB', -1, -1);
-		echo $val[0];
-	});
-
-	/**
-	 * Return a coordinates by a file initial
-	 * $param string $type Example: file, rest
-	 */
-	$app->get('/randCoordinate', function() use ($url) {
-
-		$client = new Predis\Client();
-
-		$val = $client->lrange('lastFront', rand(1,1000)*-1, -1);
+		$val = $client->lrange($tipo, rand(1,1000)*-1, -1);
 		echo $val[0];
 	});
 
