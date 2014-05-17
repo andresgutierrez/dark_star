@@ -36,9 +36,6 @@ try {
 	 * $param string $type Example: file, rest
 	 */
 	$app->get('/lastCoordinateF', function() use ($url) {
-		// Prepend a base path if Predis is not available in your "include_path".
-		require '../app/library/Predis/autoload.php';
-		Predis\Autoloader::register();
 
 		$client = new Predis\Client();
 
